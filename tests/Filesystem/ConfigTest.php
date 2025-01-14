@@ -10,7 +10,7 @@ class ConfigTest extends TestCase
 {
     public function testInstanceSuccessfully()
     {
-        $config = new Config(__DIR__ . '/../../adr.yml');
+        $config = new Config(__DIR__ . '/../../adr.yml.dist');
 
         $this->assertEquals('docs/arch', $config->directory());
         $this->assertEquals('vendor/bellangelo/phpadr/template/skeleton.md', $config->decisionRecordTemplateFile());
@@ -27,7 +27,7 @@ class ConfigTest extends TestCase
     public function testInstanceNotReadableFailure()
     {
         $vfs = vfsStream::setup();
-        $configFile = vfsStream::newFile('adr.yml')->at($vfs)->chmod(0)->url();
+        $configFile = vfsStream::newFile('adr.yml.dist')->at($vfs)->chmod(0)->url();
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage("The config file isn't readable: $configFile");

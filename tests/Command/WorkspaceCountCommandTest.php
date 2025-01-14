@@ -60,7 +60,7 @@ class WorkspaceCountCommandTest extends TestCase
     public function testExecute()
     {
         $vfs = vfsStream::setup();
-        $configContent = file_get_contents('adr.yml');
+        $configContent = file_get_contents('adr.yml.dist');
         $configContent = str_replace('docs/arch', $vfs->url(), $configContent);
         $configContent = str_replace('vendor/bellangelo/phpadr/', '', $configContent);
         $configFile = vfsStream::newFile('adr.yml')->at($vfs)->setContent($configContent)->url();

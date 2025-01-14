@@ -2,6 +2,7 @@
 
 namespace ADR\Command;
 
+use ADR\Filesystem\AutoDiscoverConfig;
 use ADR\Filesystem\Config;
 use ADR\Filesystem\Workspace;
 use Symfony\Component\Console\Command\Command;
@@ -9,6 +10,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Command to list ADRs in workspace
@@ -17,6 +19,19 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  */
 class WorkspaceListCommand extends Command
 {
+    private Filesystem $filesystem;
+
+    private AutoDiscoverConfig $autoDiscoverConfig;
+
+    public function __construct(
+        string $root
+    ) {
+        $this->root = $root;
+        $this->filesystem = new Filesystem();
+        $this->autoDiscoverConfig = new AutoDiscoverConfig($root);
+        parent::__construct('workspace:list');
+    }
+
     /**
      * Configures the command
      */
@@ -30,8 +45,7 @@ class WorkspaceListCommand extends Command
                 'config',
                 null,
                 InputOption::VALUE_REQUIRED,
-                'Config file',
-                realpath(__DIR__ . '/../../adr.yml')
+                'Config file (default: adr.yml)',
             );
     }
 
@@ -43,7 +57,9 @@ class WorkspaceListCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $config = new Config($input->getOption('config'));
+        $config = new Config(
+            $this->autoDiscoverConfig->getConfig($input->getOption('config') ?: null)
+        );
         $workspace = new Workspace($config->directory());
 
         $records = $workspace->records();
