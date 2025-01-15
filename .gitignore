@@ -1,2 +1,7 @@
 # Composer
 /vendor/
+/.idea
+/.phpunit.result.cache
+/phpstan.neon
+/phpunit.xml
+/phpcs.xml
